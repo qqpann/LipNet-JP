@@ -7,6 +7,7 @@ import click
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+from datetime import datetime
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -23,7 +24,11 @@ def speech2text(audio_file):
     stt = SpeechToTextV1(iam_apikey=APIKEY, url=URL)
     sttResult = stt.recognize(audio=audio_file, content_type="audio/flac", timestamps=True, model=jp,
                               word_confidence=True, speaker_labels=speaker_labels, max_alternatives=3)
-    return sttResult.get_result()
+    result = sttResult.get_result()
+    os.makedirs("../logs/", exist_ok=True)
+    logfile = open("../logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + audio_file + ".json", 'w')
+    json.dump(result, open(align, 'w'), indent=2, ensure_ascii=False)
+    return result
 
 
 def is_non_japanese(word):
