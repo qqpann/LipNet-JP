@@ -1,3 +1,5 @@
+import re
+
 def _make_kana_convertor():
     """ひらがな⇔カタカナ変換器を作る"""
     kata = {
