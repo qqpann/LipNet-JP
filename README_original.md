@@ -4,15 +4,14 @@ PyTorch implementation of the method described in the paper 'LipNet: End-to-End 
 
 ![LipNet Demo](demo.gif)
 
-
 ## Results
 
-|       Scenario          |  CER  |  WER  |
-|:-----------------------:|:-----:|:-----:|
-|    Unseen speakers (Origin)     |  **6.7%** |  13.6% |
-|   Overlapped speakers (Origin)   |  2.0%  |  5.6%  |
-|    Unseen speakers (Ours)      |  6.8%|  **13.5%** |
-|   Overlapped speakers (Ours)   |  **1.7%**  |  **4.1%**  |
+|           Scenario           |   CER    |    WER    |
+| :--------------------------: | :------: | :-------: |
+|   Unseen speakers (Origin)   | **6.7%** |   13.6%   |
+| Overlapped speakers (Origin) |   2.0%   |   5.6%    |
+|    Unseen speakers (Ours)    |   6.8%   | **13.5%** |
+|  Overlapped speakers (Ours)  | **1.7%** | **4.1%**  |
 
 **Notes**:
 
@@ -20,13 +19,12 @@ PyTorch implementation of the method described in the paper 'LipNet: End-to-End 
 
 ## Data Statistics
 
-|       Scenario          |  Train  |  Validation  |
-|:-----------------------:|:-----:|:-----:|
-|    Unseen speakers (Origin)      |  28775  |  3971  |
-|   Overlapped speakers (Origin)  |  24331  |  8415  |
-|    Unseen speakers (Ours)     |  28837 |  3986 |
-|   Overlapped speakers (Ours)  |  24408  |  8415  |
-
+|           Scenario           | Train | Validation |
+| :--------------------------: | :---: | :--------: |
+|   Unseen speakers (Origin)   | 28775 |    3971    |
+| Overlapped speakers (Origin) | 24331 |    8415    |
+|    Unseen speakers (Ours)    | 28837 |    3986    |
+|  Overlapped speakers (Ours)  | 24408 |    8415    |
 
 ## Preprocessing
 
@@ -34,7 +32,7 @@ Link of processed lip images and text: https://pan.baidu.com/s/165swxO8A-GUZ03-I
 
 Google Drive: https://drive.google.com/drive/folders/1Wn2EJw2101nF59eNDXEto6qXqfgDDucL?usp=sharing
 
-Download all parts and concatenate the files using the command 
+Download all parts and concatenate the files using the command
 
 ```
 cat GRID_LIP_160x80_TXT.zip.* > GRID_LIP_160x80_TXT.zip
@@ -52,24 +50,21 @@ python main.py
 
 Data path and hyperparameters are configured in `options.py`. Please pay attention that you may need to modify `options.py` to make the program work as expected.
 
-
 ## Dependencies
 
-* PyTorch 1.0+
-* opencv-python
+- PyTorch 1.0+
+- opencv-python
 
 ## Bibtex
-    @article{assael2016lipnet,
-	  title={LipNet: End-to-End Sentence-level Lipreading},
-	  author={Assael, Yannis M and Shillingford, Brendan and Whiteson, Shimon and de Freitas, Nando},
-	  journal={GPU Technology Conference},
-	  year={2017},
-	  url={https://github.com/Fengdalu/LipNet-PyTorch}
-	}
 
+    @article{assael2016lipnet,
+      title={LipNet: End-to-End Sentence-level Lipreading},
+      author={Assael, Yannis M and Shillingford, Brendan and Whiteson, Shimon and de Freitas, Nando},
+      journal={GPU Technology Conference},
+      year={2017},
+      url={https://github.com/Fengdalu/LipNet-PyTorch}
+    }
 
 ## License
 
 The MIT License
-
-
