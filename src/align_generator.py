@@ -65,8 +65,8 @@ def split_time(start, end, count):
 
 def convert_timestamp(time_stamp, word):
     align_dict = []
-    start, end = timestamp[1], timestamp[2]
-    word_vowel = extract_vowel(kana2romaji(word_converted))
+    start, end = time_stamp[1], time_stamp[2]
+    word_vowel = extract_vowel(kana2romaji(word))
     word_bigrams = bigrams(word_vowel)
     time = split_time(start, end, len(word_vowel))
     for t, w in zip(time, word_bigrams):
@@ -92,17 +92,17 @@ def convert_words(alternatives):
 @click.option('--audio', default='audio.flac')
 @click.option('--align', default='output.align')
 def main(audio, align):
-    sst = speech2text(audio)
+    s2t = speech2text(audio)
 
     align_dict = []
-    for sentence in stt["results"]:
+    for sentence in s2t["results"]:
         alternatives = sentence["alternatives"]
         words, timestamps = convert_words(alternatives)
         for t, w in zip(timestamps, words):
             align_dict.append(convert_timestamp(t, w))
 
     output_file = open(align, 'w')
-    json.dumps(align_dict, output_file, indent=2, ensure_ascii=False)
+    json.dump(align_dict, output_file, indent=2, ensure_ascii=False)
 
 
 if __name__ == '__main__':
