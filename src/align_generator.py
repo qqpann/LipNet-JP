@@ -78,30 +78,32 @@ def convert_timestamp(time_stamp, word):
 def convert_words(alternatives):
     timestamps = alternatives[0]["timestamps"]
     word_confidence = alternatives[0]["word_confidence"]
-    words, timestamps = [], []
+    words, valid_timestamps = [], []
     for timestamp, confidence in zip(timestamps, word_confidence):
         word = timestamp[0]
         word_converted = kanji2katakana(word)
         if is_non_japanese(word) == False and is_trust(confidence[1]) == True and word_converted != '*':
             words.append(word_converted)
-            timestamps.append(timestamp)
-    return words, timestamps
+            valid_timestamps.append(timestamp)
+    return words, valid_timestamps
 
 
 @click.command()
-@click.option('--audio', default='audio.flac')
-@click.option('--align', default='output.align')
-def main(audio, align):
-    s2t = speech2text(audio)
+@click.option('--audiofile', default='audio.flac')
+@click.option('--alignfile', default='output.align')
+def main(audiofile, alignfile):
+    s2t = speech2text(audiofile)
 
     align_dict = []
     for sentence in s2t["results"]:
         alternatives = sentence["alternatives"]
         words, timestamps = convert_words(alternatives)
         for t, w in zip(timestamps, words):
-            align_dict.append(convert_timestamp(t, w))
+            align_rows = convert_timestamp(t, w)
+            if align_rows:
+                align_dict.append(align_rows)
 
-    output_file = open(align, 'w')
+    output_file = open(alignfile, 'w')
     json.dump(align_dict, output_file, indent=2, ensure_ascii=False)
 
 
