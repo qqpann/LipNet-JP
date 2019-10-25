@@ -16,18 +16,20 @@ load_dotenv(dotenv_path)
 def speech2text(audio_file):
     jp = 'ja-JP_BroadbandModel'
     cont_type = "audio/flac"
-    audio_file = open(audio_file, "rb")
     URL = 'https://gateway-tok.watsonplatform.net/speech-to-text/api'
     APIKEY = os.environ.get("API_KEY")
     speaker_labels = True
 
+    print('Starting talking to stt...')
     stt = SpeechToTextV1(iam_apikey=APIKEY, url=URL)
-    sttResult = stt.recognize(audio=audio_file, content_type="audio/flac", timestamps=True, model=jp,
-                              word_confidence=True, speaker_labels=speaker_labels, max_alternatives=3)
+    with open(audio_file, 'rb') as f:
+        sttResult = stt.recognize(audio=f, content_type="audio/flac", timestamps=True, model=jp,
+                                word_confidence=True, speaker_labels=speaker_labels, max_alternatives=3)
     result = sttResult.get_result()
+    print('Got stt result.')
     os.makedirs("../logs/", exist_ok=True)
-    logfile = open("../logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + audio_file + ".json", 'w')
-    json.dump(result, open(align, 'w'), indent=2, ensure_ascii=False)
+    with open("../logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + audio_file + ".json", 'w') as logfile:
+        json.dump(result, logfile, indent=2, ensure_ascii=False)
     return result
 
 
