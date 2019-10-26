@@ -8,12 +8,20 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from datetime import datetime
+from pathlib import Path
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 
-def speech2text(audio_file):
+def speech2text(audio_file: Path):
+    srcdir = Path(str(os.path.dirname(os.path.realpath(__file__))))
+    workdir = srcdir.parent
+    logdir = workdir / 'logs'
+    logdir.mkdir(exist_ok=True)
+    outpath = logdir / '{}{}.json'.format(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), audio_file.stem)
+    print(outpath)
+
     jp = 'ja-JP_BroadbandModel'
     cont_type = "audio/flac"
     URL = 'https://gateway-tok.watsonplatform.net/speech-to-text/api'
@@ -27,9 +35,8 @@ def speech2text(audio_file):
                                 word_confidence=True, speaker_labels=speaker_labels, max_alternatives=3)
     result = sttResult.get_result()
     print('Got stt result.')
-    os.makedirs("../logs/", exist_ok=True)
-    with open("../logs/" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + audio_file + ".json", 'w') as logfile:
-        json.dump(result, logfile, indent=2, ensure_ascii=False)
+    with open(str(outpath), 'w') as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
     return result
 
 
@@ -99,7 +106,7 @@ def convert_words(alternatives):
 @click.option('--audiofile', default='audio.flac')
 @click.option('--alignfile', default='output.align')
 def main(audiofile, alignfile):
-    s2t = speech2text(audiofile)
+    s2t = speech2text(Path(audiofile))
 
     align_dict = []
     for sentence in s2t["results"]:
