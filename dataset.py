@@ -13,26 +13,32 @@ import copy
 import json
 import random
 import editdistance
+from pathlib import Path
 
 
 class MyDataset(Dataset):
     letters = [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-    def __init__(self, video_path, anno_path, file_list, vid_pad, txt_pad, phase):
+    def __init__(self, videodir: str, anno_path: str, file_list: str, vid_pad, txt_pad, phase):
         self.anno_path = anno_path
         self.vid_pad = vid_pad
         self.txt_pad = txt_pad
         self.phase = phase
 
+        videodir = Path(videodir)
+
         with open(file_list, 'r') as f:
-            self.videos = [os.path.join(video_path, line.strip())
+            self.videos = [str(videodir / line.strip())
                            for line in f.readlines()]
 
         self.data = []
         for vid in self.videos:
             items = vid.split(os.path.sep)
-            self.data.append((vid, items[-4], items[-1]))
+            # s14/video/mpg_6000/lwwy5n
+            spk = items[-4]
+            name = items[-1]
+            self.data.append((vid, spk, name))
 
     def __getitem__(self, idx):
         (vid, spk, name) = self.data[idx]
@@ -60,8 +66,8 @@ class MyDataset(Dataset):
 
     def _load_vid(self, p):
         files = os.listdir(p)
-        files = list(filter(lambda file: file.find('.jpg') != -1, files))
-        files = sorted(files, key=lambda file: int(os.path.splitext(file)[0]))
+        files = list(filter(lambda file: file.find('.bmp') != -1, files))
+        files = sorted(files)
         array = [cv2.imread(os.path.join(p, file)) for file in files]
         array = list(filter(lambda im: not im is None, array))
         array = [cv2.resize(
