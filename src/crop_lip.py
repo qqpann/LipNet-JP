@@ -8,10 +8,10 @@ from tqdm import tqdm
 import sys
 
 
-def main(youtube_id = 'cLgEcNPr-ZE'):
-    of_aligneddir = Path('/home/jphacks/LipNet-JP/data/processed/{}_aligned/'.format(youtube_id))
-    aligned_lm_path = Path('/home/jphacks/LipNet-JP/data/processed2/{}_aligned.csv'.format(youtube_id))
-    cropped_outdir = Path('/home/jphacks/LipNet-JP/data/processed2/{}_aligned_aligned_cropped/'.format(youtube_id))
+def main(youtube_id = '1'):
+    of_aligneddir = Path('/home/jphacks/LipNet-JP/data/processed/{0}/{0}_aligned/'.format(youtube_id))
+    aligned_lm_path = Path('/home/jphacks/LipNet-JP/data/processed2/{0}/{0}_aligned.csv'.format(youtube_id))
+    cropped_outdir = Path('/home/jphacks/LipNet-JP/data/processed2/{0}/{0}_aligned_aligned_cropped/'.format(youtube_id))
     cropped_outdir.mkdir(exist_ok=True)
 
     lm_df = pd.read_csv(aligned_lm_path)
