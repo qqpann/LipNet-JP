@@ -46,7 +46,7 @@ def is_trust(confidence):
 
 
 def kanji2katakana(word):
-    return MeCab.Tagger().parse(word).split(',')[-2]
+    return MeCab.Tagger().parse(word).split('\n')[0].split(',')[-1]
 
 
 def extract_vowel(word):
