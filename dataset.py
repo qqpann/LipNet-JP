@@ -14,11 +14,13 @@ import json
 import random
 import editdistance
 from pathlib import Path
+from src.letters import letters as LETTERS
 
 
 class MyDataset(Dataset):
-    letters = [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-               'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    # letters = [' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+    #            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    letters = LETTERS
 
     def __init__(self, videodir: str, anno_path: str, file_list: str, vid_pad, txt_pad, phase):
         self.anno_path = anno_path

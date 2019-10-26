@@ -4,6 +4,7 @@ import torch.nn.init as init
 import torch.nn.functional as F
 import math
 import numpy as np
+from src.letters import letters as LETTERS
 
 
 class LipNet(torch.nn.Module):
@@ -21,7 +22,7 @@ class LipNet(torch.nn.Module):
         self.gru1 = nn.GRU(96*3*6, 256, 1, bidirectional=True)
         self.gru2 = nn.GRU(512, 256, 1, bidirectional=True)
 
-        self.FC = nn.Linear(512, 27+1)
+        self.FC = nn.Linear(512, len(LETTERS)+1)
         self.dropout_p = dropout_p
 
         self.relu = nn.ReLU(inplace=True)
