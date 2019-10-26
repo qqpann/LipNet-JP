@@ -162,7 +162,7 @@ def _make_romaji_convertor():
         rx_ltu = re.compile("ッ$")  # 最後の小さい "ッ" は消去(?)
         rx_er = re.compile("(.)ー")  # "ー"は直前の文字を２回に変換
         rx_n = re.compile(r"n(b|p)([aiueo])")  # n の後ろが バ行、パ行 なら m に修正
-        rx_oo = re.compile(r"([aiueo])\1")      # oosaka → osaka
+        # rx_oo = re.compile(r"([aiueo])\1")      # oosaka → osaka
 
         def _kana2romaji(text):
             result = hiragana2katakana(text)
@@ -171,7 +171,7 @@ def _make_romaji_convertor():
             result = rx_ltu.sub(r"", result)
             result = rx_er.sub(r"\1\1", result)
             result = rx_n.sub(r"m\1\2", result)
-            result = rx_oo.sub(r"\1", result)
+            # result = rx_oo.sub(r"\1", result)
             return result
         return _kana2romaji
 
