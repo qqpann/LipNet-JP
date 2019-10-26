@@ -57,7 +57,8 @@ def kanji2katakana(word):
 
 
 def extract_vowel(word):
-    word = re.sub(r'[^aiueon]', '', word)
+    word = re.sub(r'[^aiueo@]', '', word)
+    word = re.sub(r'@', 'n', word)
     return re.sub(r'n{2}', 'n', word)
 
 
