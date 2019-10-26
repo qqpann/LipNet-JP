@@ -24,6 +24,11 @@ ffmpeg -i {youtube_id}.mp4 -c:v copy {youtube_id}.avi
 
 これでdockerを立ち上げて，中に入る．psでid確認してcpなどする．
 ```
+docker run -it --rm algebr/openface:latest
+```
+
+
+```
 docker cp {youtube_id}.avi {docker_id}:/home/openface-build
 ```
 
