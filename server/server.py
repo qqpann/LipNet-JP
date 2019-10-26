@@ -2,6 +2,8 @@ import eventlet
 import socketio
 import numpy as np
 import cv2
+import base64
+import json
 
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
@@ -13,11 +15,18 @@ np.set_printoptions(threshold=10000000)
 
 # 予測モデルで予測を行うメソッド
 def requestPrediction(bufferImage):
+    for index, image in enumerate(bufferImage):
+        retval = cv2.imwrite(f"images/{str(index)}.jpg", image)
+        print(retval)
+        if index > 5:
+            break
+
     return ["まいたけ"]
 
 @sio.event
 def connect(sid, environ):
     print('connect ', sid)
+    # sio.emit('requestPrediction', json.dumps({'data': ["まいたけ"]}), room=sid)
     buffer[sid] = []
 
 @sio.event
@@ -30,20 +39,24 @@ def message(sid, data):
 
 @sio.event
 def sendImage(sid, data):
+    data = base64.b64decode(data)
     data = np.frombuffer(data, dtype=np.uint8)
-    data = np.reshape(data, (160,80,3))
+
+    # 要修正
+    # data = np.reshape(data, (80,160,3))
+    data = cv2.resize(data,(160, 80))
     buffer[sid].append(data)
 
 # 画像配列を変換候補メソッドへ渡す
 @sio.event
-def predictMouth(sid, data):
+def predictMouth(sid):
     bufferImage = np.array(buffer[sid])
     
     # 予測メソッドへ投げる
     response = requestPrediction(bufferImage)
 
     # 返ってきた値を返す
-    sio.emit('requestPredictMouth', {'data': response}, room=sid)
+    sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
     
     buffer[sid] = []
 
