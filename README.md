@@ -44,6 +44,7 @@ docker cp {docker_id}:/home/openface-build/processed data/.
 docker cp {docker_id}:/home/openface-build/processed2 data/.
 
 python src/crop_lip.py {youtube_id}
+python src/make_train_val.py {youtube_id}  # after flac is made.
 ```
 
 ## Prepare audio
