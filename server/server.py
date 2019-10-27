@@ -6,6 +6,7 @@ import cv2
 import eventlet
 import numpy as np
 import socketio
+from jphacks.estimate import pakupaku
 
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
@@ -16,11 +17,11 @@ buffer = {}
 np.set_printoptions(threshold=10000000)
 
 # 予測モデルで予測を行うメソッド
-def requestPrediction(bufferImage):
-    
-    # response = subprocess.check_output("コマンド")
-    # return response
-    return ["good"]
+def requestPrediction(textList):
+    # response = subprocess.check_output(["python3", "estimate.py", ""])
+
+    response = pakupaku(textList)
+    return response
 
     # for index, image in enumerate(bufferImage):
     #     retval = cv2.imwrite(f"images/{str(index)}.jpg", image)
@@ -31,7 +32,6 @@ def requestPrediction(bufferImage):
 @sio.event
 def connect(sid, environ):
     print('connect ', sid)
-    # sio.emit('requestPrediction', json.dumps({'data': ["まいたけ"]}), room=sid)
     buffer[sid] = []
 
 @sio.event
@@ -63,6 +63,33 @@ def sendImage(sid, data):
         traceback.print_exc()
         response = []
 
+    # 返ってきた値を返す
+    sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
+
+@sio.event
+def sendText(sid, data):
+    # try:
+    #     # base64をdecode
+    #     data = base64.b64decode(data)
+
+    #     data = np.frombuffer(data, dtype=np.uint8)
+    #     data = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        
+    #     print(data.shape)
+
+    #     # リサイズする
+    #     data = cv2.resize(data,(160, 80))
+    #     response = requestPrediction(data)
+    #     response = ["good"]
+        
+    # except:
+    #     import traceback
+    #     traceback.print_exc()
+    #     response = []
+
+    # dataは、strを要素に持つリスト
+    response = requestPrediction(data)
+    
     # 返ってきた値を返す
     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
 
