@@ -6,7 +6,7 @@ import cv2
 import eventlet
 import numpy as np
 import socketio
-from jphacks.estimate import pakupaku
+from estimate import pakupaku
 
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
@@ -19,7 +19,7 @@ np.set_printoptions(threshold=10000000)
 # 予測モデルで予測を行うメソッド
 def requestPrediction(textList):
     # response = subprocess.check_output(["python3", "estimate.py", ""])
-
+    textList = ["a", "a", "a", "e", "a", "e", "a", "i"]
     response = pakupaku(textList)
     return response
 
