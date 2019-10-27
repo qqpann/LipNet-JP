@@ -1,9 +1,12 @@
-import eventlet
-import socketio
-import numpy as np
-import cv2
 import base64
 import json
+import subprocess
+
+import cv2
+import eventlet
+import numpy as np
+import socketio
+
 
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
@@ -15,6 +18,10 @@ np.set_printoptions(threshold=10000000)
 
 # 予測モデルで予測を行うメソッド
 def requestPrediction(bufferImage):
+    
+    # response = subprocess.check_output("コマンド")
+    # return response
+
     for index, image in enumerate(bufferImage):
         retval = cv2.imwrite(f"images/{str(index)}.jpg", image)
         print(retval)
@@ -40,11 +47,12 @@ def message(sid, data):
 @sio.event
 def sendImage(sid, data):
     data = base64.b64decode(data)
+    
     data = np.frombuffer(data, dtype=np.uint8)
+    data = cv2.imdecode(data, cv2.IMREAD_COLOR)
 
     # 要修正
-    # data = np.reshape(data, (80,160,3))
-    data = cv2.resize(data,(160, 80))
+    data = np.reshape(data, (80,160,3))
     buffer[sid].append(data)
 
 # 画像配列を変換候補メソッドへ渡す
