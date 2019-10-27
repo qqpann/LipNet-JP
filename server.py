@@ -6,7 +6,6 @@ import cv2
 import eventlet
 import numpy as np
 import socketio
-from jphacks.estimate import pakupaku
 
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
@@ -89,7 +88,7 @@ def sendText(sid, data):
 
     # dataは、strを要素に持つリスト
     response = requestPrediction(data)
-    
+
     # 返ってきた値を返す
     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
 
