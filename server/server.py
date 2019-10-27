@@ -7,7 +7,6 @@ import eventlet
 import numpy as np
 import socketio
 
-
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
     '/': {'content_type': 'text/html', 'filename': 'index.html'}
@@ -46,27 +45,32 @@ def message(sid, data):
 
 @sio.event
 def sendImage(sid, data):
+    # base64をdecode
     data = base64.b64decode(data)
     
     data = np.frombuffer(data, dtype=np.uint8)
     data = cv2.imdecode(data, cv2.IMREAD_COLOR)
-
-    # 要修正
     data = np.reshape(data, (80,160,3))
-    buffer[sid].append(data)
-
-# 画像配列を変換候補メソッドへ渡す
-@sio.event
-def predictMouth(sid):
-    bufferImage = np.array(buffer[sid])
     
-    # 予測メソッドへ投げる
-    response = requestPrediction(bufferImage)
+    response = requestPrediction(data)
 
     # 返ってきた値を返す
     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
+
+    # buffer[sid].append(data)
+
+# 画像配列を変換候補メソッドへ渡す
+# @sio.event
+# def predictMouth(sid):
+#     bufferImage = np.array(buffer[sid])
     
-    buffer[sid] = []
+#     # 予測メソッドへ投げる
+#     response = requestPrediction(bufferImage)
+
+#     # 返ってきた値を返す
+#     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
+    
+#     buffer[sid] = []
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 80)), app)
