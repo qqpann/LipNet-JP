@@ -19,7 +19,6 @@ np.set_printoptions(threshold=10000000)
 # 予測モデルで予測を行うメソッド
 def requestPrediction(textList):
     # response = subprocess.check_output(["python3", "estimate.py", ""])
-    textList = ["a", "a", "a", "e", "a", "e", "a", "i"]
     response = pakupaku(textList)
     return response
 
@@ -68,27 +67,10 @@ def sendImage(sid, data):
 
 @sio.event
 def sendText(sid, data):
-    # try:
-    #     # base64をdecode
-    #     data = base64.b64decode(data)
-
-    #     data = np.frombuffer(data, dtype=np.uint8)
-    #     data = cv2.imdecode(data, cv2.IMREAD_COLOR)
-        
-    #     print(data.shape)
-
-    #     # リサイズする
-    #     data = cv2.resize(data,(160, 80))
-    #     response = requestPrediction(data)
-    #     response = ["good"]
-        
-    # except:
-    #     import traceback
-    #     traceback.print_exc()
-    #     response = []
+    data = json.loads(data)
 
     # dataは、strを要素に持つリスト
-    response = requestPrediction(data)
+    response = requestPrediction(data['text'])
 
     # 返ってきた値を返す
     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
