@@ -20,14 +20,13 @@ def requestPrediction(bufferImage):
     
     # response = subprocess.check_output("コマンド")
     # return response
+    return ["good"]
 
-    for index, image in enumerate(bufferImage):
-        retval = cv2.imwrite(f"images/{str(index)}.jpg", image)
-        print(retval)
-        if index > 5:
-            break
-
-    return ["まいたけ"]
+    # for index, image in enumerate(bufferImage):
+    #     retval = cv2.imwrite(f"images/{str(index)}.jpg", image)
+    #     print(retval)
+    #     if index > 5:
+    #         break
 
 @sio.event
 def connect(sid, environ):
@@ -45,32 +44,27 @@ def message(sid, data):
 
 @sio.event
 def sendImage(sid, data):
-    # base64をdecode
-    data = base64.b64decode(data)
-    
-    data = np.frombuffer(data, dtype=np.uint8)
-    data = cv2.imdecode(data, cv2.IMREAD_COLOR)
-    data = np.reshape(data, (80,160,3))
-    
-    response = requestPrediction(data)
+    try:
+        # base64をdecode
+        data = base64.b64decode(data)
+
+        data = np.frombuffer(data, dtype=np.uint8)
+        data = cv2.imdecode(data, cv2.IMREAD_COLOR)
+        
+        print(data.shape)
+
+        # リサイズする
+        data = cv2.resize(data,(160, 80))
+        response = requestPrediction(data)
+        response = ["good"]
+        
+    except:
+        import traceback
+        traceback.print_exc()
+        response = []
 
     # 返ってきた値を返す
     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
-
-    # buffer[sid].append(data)
-
-# 画像配列を変換候補メソッドへ渡す
-# @sio.event
-# def predictMouth(sid):
-#     bufferImage = np.array(buffer[sid])
-    
-#     # 予測メソッドへ投げる
-#     response = requestPrediction(bufferImage)
-
-#     # 返ってきた値を返す
-#     sio.emit('requestPrediction', json.dumps({'data': response}), room=sid)
-    
-#     buffer[sid] = []
 
 if __name__ == '__main__':
     eventlet.wsgi.server(eventlet.listen(('', 80)), app)
