@@ -23,8 +23,8 @@ def speech2text(audio_file: Path):
     print(outpath)
 
     jp = 'ja-JP_BroadbandModel'
-    cont_type = "audio/mp3"
     # cont_type = "audio/flac"
+    cont_type = "audio/mp3"
     URL = 'https://gateway-tok.watsonplatform.net/speech-to-text/api'
     APIKEY = os.environ.get("API_KEY")
     speaker_labels = True
@@ -92,8 +92,8 @@ def convert_timestamp(time_stamp, word):
         return align_dict    
     word_vowel = extract_vowel(kana2romaji(word))
     word_ngrams = unigrams(word_vowel)
-    time = split_time(start, end, len(word_vowel))
-    for t, w in zip(time, word_ngrams):
+    time = [{"start": start + (end-start)/len(word_vowel) * i, "end": start + (end-start)/len(word_vowel) * (i+1)} for i in range(len(word_vowel))]
+    for t, w in zip(time, word_vowel):
         row = {"word": w, "start": t["start"], "end": t["end"]}
         align_dict.append(row)
     return align_dict
@@ -113,10 +113,13 @@ def convert_words(alternatives):
 
 
 @click.command()
-@click.option('--audiofile', default='audio.flac')
+@click.option('--audiofile', default='flac/1.flac')
 @click.option('--alignfile', default='output.align')
 @click.option('--load-stt', default='')
 def main(audiofile, alignfile, load_stt):
+    if alignfile == 'output.align':
+        alignfile = 'output' + audiofile.split('/')[-1].split('.')[0] + '_word.align'
+
     if not load_stt:
         s2t = speech2text(Path(audiofile))
     else:

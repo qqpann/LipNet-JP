@@ -125,6 +125,7 @@ def train(model, net):
 
             optimizer.zero_grad()
             y = net(vid)
+            print(y.shape)
             loss = crit(y.transpose(0, 1).log_softmax(-1), txt,
                         vid_len.view(-1), txt_len.view(-1))
             loss.backward()

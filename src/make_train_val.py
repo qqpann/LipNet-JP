@@ -69,7 +69,7 @@ def main(youtube_id: str = '1'):
                 end = w['end']
                 start0 = min(start0, start)
                 end0 = max(end0, end)
-                f.write('{} {} {}\n'.format(start, end, w['word']))
+                f.write('{} {} {}\n'.format(int(start * 1000), int(end * 1000), w['word']))
 
 
 if __name__ == '__main__':
